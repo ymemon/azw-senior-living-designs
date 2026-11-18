@@ -1,0 +1,63 @@
+/* Parallax version of a design (option azw_motion = "parallax", body class azw-parallax).
+ * Every full-width photo band (hero, area band, photo call-to-action) holds its photo still while the
+ * page scrolls over it, so each band opens like a window onto a fixed picture.
+ * Pure CSS: the band clips (clip-path) a photo that is fixed to the viewport. Unlike
+ * background-attachment: fixed this works with <img> (srcset, lazy loading, alt text) and on iPhones.
+ * Loaded after sections.css and the design's own CSS. */
+
+.sx-hero-bg,
+.sx-ph-bg,
+.sx-spot-bg,
+.sx-area-bg,
+.sx-cta-bg {
+	clip-path: inset(0);
+	/* The spotlight band drifts on scroll (a scroll-linked transform animation). A band that is moved, or
+	   even has a transform animation running, holds its fixed photo and drags it along: switch both off. */
+	transform: none !important;
+	animation: none !important;
+}
+.sx-hero-bg .azw-photo,
+.sx-ph-bg .azw-photo,
+.sx-spot-bg .azw-photo,
+.sx-area-bg .azw-photo,
+.sx-cta-bg .azw-photo {
+	position: static;
+}
+.sx-hero-bg img,
+.sx-ph-bg img,
+.sx-spot-bg img,
+.sx-area-bg img,
+.sx-cta-bg img {
+	position: fixed;
+	inset: 0;
+	width: 100%;
+	height: 100vh;
+	height: 100lvh; /* the tall viewport, so a phone's address bar sliding away leaves no gap */
+	max-width: none;
+	object-fit: cover;
+	/* The designs' slow zoom and scroll-in settle move the photo; here the still photo is the effect. */
+	animation: none !important;
+	transform: none !important;
+}
+
+/* The band needs height for the still photo to read as a window, not a slit. */
+.sx-area--band { min-height: min(70vh, 640px); display: flex; align-items: center; }
+.sx-area--band > * { width: 100%; }
+.sx-cta--photo .sx-cta-box { min-height: min(60vh, 560px); display: grid; align-content: center; }
+
+/* A fixed photo inside a moved (transformed) parent moves with it, so on these pages the scroll-in
+ * effect is a fade only. */
+.azw-reveal,
+.azw-reveal.is-pending { transform: none !important; }
+
+/* Visitors who ask for less motion get the standard version. */
+@media (prefers-reduced-motion: reduce) {
+	:is(.sx-ph-bg, .sx-spot-bg),
+	.sx-hero-bg,
+	.sx-area-bg,
+	.sx-cta-bg { clip-path: none; }
+	:is(.sx-ph-bg, .sx-spot-bg) img,
+	.sx-hero-bg img,
+	.sx-area-bg img,
+	.sx-cta-bg img { position: absolute; height: 100%; }
+}
